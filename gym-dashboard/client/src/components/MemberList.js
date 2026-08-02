@@ -41,7 +41,7 @@ function MemberList({ refreshMembers, onCountChange, searchTerm }) {
 
   const fetchMembers = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/members');
+      const res = await axios.get('https://fitness-planet-backend.onrender.com/api/members');
       setMembers(res.data);
       if (onCountChange) onCountChange(res.data.length);
       res.data.forEach((m) => fetchAttendanceCount(m._id));
@@ -52,7 +52,7 @@ function MemberList({ refreshMembers, onCountChange, searchTerm }) {
 
   const fetchAttendanceCount = async (memberId) => {
     try {
-      const res = await axios.get(`http://localhost:5000/api/attendance/${memberId}`);
+      const res = await axios.get(`https://fitness-planet-backend.onrender.com/api/attendance/${memberId}`);
       setAttendance((prev) => ({ ...prev, [memberId]: res.data.count }));
     } catch (err) {
       console.error('Error fetching attendance:', err);
@@ -61,7 +61,7 @@ function MemberList({ refreshMembers, onCountChange, searchTerm }) {
 
   const markPresent = async (memberId) => {
     try {
-      await axios.post(`http://localhost:5000/api/attendance/${memberId}`);
+      await axios.post(`https://fitness-planet-backend.onrender.com/api/attendance/${memberId}`);
       fetchAttendanceCount(memberId);
     } catch (err) {
       if (err.response && err.response.status === 400) {
@@ -74,7 +74,7 @@ function MemberList({ refreshMembers, onCountChange, searchTerm }) {
 
   const deleteMember = async (id) => {
     try {
-      await axios.delete(`http://localhost:5000/api/members/${id}`);
+      await axios.delete(`https://fitness-planet-backend.onrender.com/api/members/${id}`);
       fetchMembers();
     } catch (err) {
       console.error('Error deleting member:', err);
@@ -109,7 +109,7 @@ function MemberList({ refreshMembers, onCountChange, searchTerm }) {
       if (!payload.expiryOverride) {
         payload.expiryOverride = null;
       }
-      await axios.put(`http://localhost:5000/api/members/${id}`, payload);
+      await axios.put(`https://fitness-planet-backend.onrender.com/api/members/${id}`, payload);
       setEditingId(null);
       fetchMembers();
     } catch (err) {

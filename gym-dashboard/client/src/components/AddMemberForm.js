@@ -22,7 +22,7 @@ function AddMemberForm({ onMemberAdded }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('http://localhost:5000/api/members', form);
+      await axios.post('https://fitness-planet-backend.onrender.com/api/members', form);
       setForm({ name: '', age: '', gender: 'Male', contact: '', membershipType: 'Monthly', joinDate: today });
       onMemberAdded();
     } catch (err) {

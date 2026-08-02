@@ -12,7 +12,7 @@ function AttendanceCalendar({ memberId, onClose }) {
     const fetchMonth = async () => {
       try {
         const res = await axios.get(
-          `http://localhost:5000/api/attendance/${memberId}/month/${year}/${month}`
+          `https://fitness-planet-backend.onrender.com/api/attendance/${memberId}/month/${year}/${month}`
         );
         setPresentDays(res.data.days);
         setMonthCount(res.data.count);
