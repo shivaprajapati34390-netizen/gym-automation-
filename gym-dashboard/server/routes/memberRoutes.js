@@ -4,7 +4,6 @@ const Member = require("../models/Member");
 
 const router = express.Router();
 
-
 // =======================
 // Create a Member
 // =======================
@@ -18,13 +17,17 @@ router.post("/", async (req, res) => {
 
     // Send member data to n8n Webhook
     try {
-      await axios.post("http://localhost:5678/webhook-test/new-member", {
-        _id: member._id,
-        name: member.name,
-        contact: member.contact,
-        membershipType: member.membershipType,
-        expiryDate: member.expiryDate,
-      });
+      await axios.post(
+        "http://localhost:5678/webhook-test/new-member",
+        {
+          _id: member._id,
+          name: member.name,
+          contact: member.contact,
+          membershipType: member.membershipType,
+          expiryDate: member.expiryDate,
+          dob: member.dob,
+        }
+      );
 
       console.log("✅ Data sent to n8n");
     } catch (error) {
@@ -33,7 +36,8 @@ router.post("/", async (req, res) => {
 
     res.status(201).json(member);
   } catch (err) {
-    console.error(err);
+    console.error("❌ Create member error:", err);
+
     res.status(400).json({
       error: err.message,
     });
@@ -47,8 +51,11 @@ router.post("/", async (req, res) => {
 router.get("/", async (req, res) => {
   try {
     const members = await Member.find();
+
     res.json(members);
   } catch (err) {
+    console.error("❌ Get members error:", err);
+
     res.status(500).json({
       error: err.message,
     });
@@ -71,6 +78,8 @@ router.get("/:id", async (req, res) => {
 
     res.json(member);
   } catch (err) {
+    console.error("❌ Get member error:", err);
+
     res.status(500).json({
       error: err.message,
     });
@@ -83,10 +92,39 @@ router.get("/:id", async (req, res) => {
 // =======================
 router.put("/:id", async (req, res) => {
   try {
+    const {
+      name,
+      age,
+      gender,
+      contact,
+      membershipType,
+      joinDate,
+      expiryOverride,
+      dob,
+      registrationFee,
+      membershipFee,
+    } = req.body;
+
+    const updatedData = {
+      name,
+      age,
+      gender,
+      contact,
+      membershipType,
+      joinDate,
+      expiryOverride: expiryOverride || null,
+      dob: dob || null,
+      registrationFee: registrationFee || 0,
+      membershipFee: membershipFee || 0,
+    };
+
     const member = await Member.findByIdAndUpdate(
       req.params.id,
-      req.body,
-      { new: true }
+      updatedData,
+      {
+        new: true,
+        runValidators: true,
+      }
     );
 
     if (!member) {
@@ -95,8 +133,13 @@ router.put("/:id", async (req, res) => {
       });
     }
 
-    res.json(member);
+    console.log("✅ Member updated:", member.name);
+
+    res.status(200).json(member);
+
   } catch (err) {
+    console.error("❌ Update member error:", err);
+
     res.status(400).json({
       error: err.message,
     });
@@ -117,14 +160,20 @@ router.delete("/:id", async (req, res) => {
       });
     }
 
+    console.log("✅ Member deleted:", member.name);
+
     res.json({
       message: "Member deleted successfully",
     });
+
   } catch (err) {
+    console.error("❌ Delete member error:", err);
+
     res.status(400).json({
       error: err.message,
     });
   }
 });
+
 
 module.exports = router;
