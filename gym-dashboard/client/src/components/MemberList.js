@@ -6,9 +6,12 @@ const API = 'https://fitness-planet-backend.onrender.com';
 
 function toDateInputValue(date) {
   const d = new Date(date);
-  const year = d.getFullYear();
-  const month = String(d.getMonth() + 1).padStart(2, '0');
-  const day = String(d.getDate()).padStart(2, '0');
+  // Use UTC getters, not local getters — dates are stored as UTC midnight,
+  // so reading them back with local getters shifts by a day if the
+  // browser/system timezone isn't IST. UTC getters are always consistent.
+  const year = d.getUTCFullYear();
+  const month = String(d.getUTCMonth() + 1).padStart(2, '0');
+  const day = String(d.getUTCDate()).padStart(2, '0');
   return `${year}-${month}-${day}`;
 }
 
@@ -17,18 +20,21 @@ function getExpiryDate(member) {
     return new Date(member.expiryOverride);
   }
   const d = new Date(member.joinDate);
+  // Use UTC setters/getters for the same reason — keeps the calculated
+  // expiry date anchored to the same calendar day regardless of the
+  // viewer's local timezone.
   switch (member.membershipType) {
     case 'Yearly':
-      d.setFullYear(d.getFullYear() + 1);
+      d.setUTCFullYear(d.getUTCFullYear() + 1);
       break;
     case 'HalfYearly':
-      d.setMonth(d.getMonth() + 6);
+      d.setUTCMonth(d.getUTCMonth() + 6);
       break;
     case 'Quarterly':
-      d.setMonth(d.getMonth() + 3);
+      d.setUTCMonth(d.getUTCMonth() + 3);
       break;
     default:
-      d.setMonth(d.getMonth() + 1);
+      d.setUTCMonth(d.getUTCMonth() + 1);
   }
   return d;
 }
@@ -195,7 +201,7 @@ function MemberList({ refreshMembers, onCountChange, searchTerm }) {
               <span className="status-tag">{isExpiring ? 'Expiring' : 'Active'}</span>
             </div>
             <p className="member-name">{m.name}</p>
-            <p className="member-meta">{m.contact} � {formatMembershipType(m.membershipType)}</p>
+            <p className="member-meta">{m.contact} � {formatMembershipType(m.membershipType)}</p>
             <p className="member-meta">Joined: {formatDate(m.joinDate)}</p>
             <p className="member-meta">Expires: {formatDate(expiry)}{m.expiryOverride ? ' (manual)' : ''}</p>
             {m.dob && <p className="member-meta">Birthday: {formatBirthday(m.dob)}</p>}

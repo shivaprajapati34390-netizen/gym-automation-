@@ -1,4 +1,4 @@
-Welcome to the **Gym Membership Management System**! This is a full-stack web application built using the **MERN stack** (MongoDB, Express.js, React, and Node.js). It allows gyms to efficiently manage their members, including adding new members, updating their details, deleting members, and tracking attendance.
+oWelcome to the **Gym Membership Management System**! This is a full-stack web application built using the **MERN stack** (MongoDB, Express.js, React, and Node.js). It allows gyms to efficiently manage their members, including adding new members, updating their details, deleting members, and tracking attendance.
 
 ---
 
