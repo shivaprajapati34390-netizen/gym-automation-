@@ -10,5 +10,6 @@ const memberSchema = new mongoose.Schema({
   dob: { type: Date, default: null },
   registrationFee: { type: Number, default: 0 },
   membershipFee: { type: Number, default: 0 },
+  MarkedPresentDates: [{ type: Date }],
 });
 module.exports = mongoose.model('Member', memberSchema);

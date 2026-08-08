@@ -24,8 +24,12 @@ router.post("/", async (req, res) => {
           name: member.name,
           contact: member.contact,
           membershipType: member.membershipType,
-          expiryDate: member.expiryDate,
+          joinDate: member.joinDate,
+          expiryOverride: member.expiryOverride,
           dob: member.dob,
+          registrationFee: member.registrationFee,
+          membershipFee: member.membershipFee,
+          MarkedPresentDates: member.MarkedPresentDates,
         }
       );
 
@@ -35,6 +39,7 @@ router.post("/", async (req, res) => {
     }
 
     res.status(201).json(member);
+
   } catch (err) {
     console.error("❌ Create member error:", err);
 
@@ -44,7 +49,6 @@ router.post("/", async (req, res) => {
   }
 });
 
-
 // =======================
 // Get All Members
 // =======================
@@ -53,6 +57,7 @@ router.get("/", async (req, res) => {
     const members = await Member.find();
 
     res.json(members);
+
   } catch (err) {
     console.error("❌ Get members error:", err);
 
@@ -61,7 +66,6 @@ router.get("/", async (req, res) => {
     });
   }
 });
-
 
 // =======================
 // Get Single Member
@@ -77,6 +81,7 @@ router.get("/:id", async (req, res) => {
     }
 
     res.json(member);
+
   } catch (err) {
     console.error("❌ Get member error:", err);
 
@@ -85,7 +90,6 @@ router.get("/:id", async (req, res) => {
     });
   }
 });
-
 
 // =======================
 // Update Member
@@ -103,6 +107,7 @@ router.put("/:id", async (req, res) => {
       dob,
       registrationFee,
       membershipFee,
+      MarkedPresentDates,
     } = req.body;
 
     const updatedData = {
@@ -116,6 +121,7 @@ router.put("/:id", async (req, res) => {
       dob: dob || null,
       registrationFee: registrationFee || 0,
       membershipFee: membershipFee || 0,
+      MarkedPresentDates: MarkedPresentDates || [],
     };
 
     const member = await Member.findByIdAndUpdate(
@@ -146,7 +152,6 @@ router.put("/:id", async (req, res) => {
   }
 });
 
-
 // =======================
 // Delete Member
 // =======================
@@ -174,6 +179,5 @@ router.delete("/:id", async (req, res) => {
     });
   }
 });
-
 
 module.exports = router;
